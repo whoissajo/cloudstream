@@ -1,9 +1,10 @@
-import com.lagradost.cloudstream3.gradle.CloudstreamExtension
-
-// This is the provider-specific build file
-// Most of the configuration is handled in the root build.gradle.kts
+// Use an integer for version numbers
+version = 1
 
 cloudstream {
-    // This is the class name of the provider
-    providerClass = "UmarR2Provider"
+    // These properties are reflected in the generated plugins.json
+    description = "Streams from Cloudflare R2"
+    authors = listOf("Umar")
+    tvTypes = listOf("Movie")
+    language = "en"
 }
