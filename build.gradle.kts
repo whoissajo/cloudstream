@@ -11,7 +11,6 @@ buildscript {
     }
 
     dependencies {
-        // Updated to match the working example for Cloudstream
         classpath("com.android.tools.build:gradle:8.7.3")
         classpath("com.github.recloudstream:gradle:-SNAPSHOT")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0")
@@ -36,14 +35,15 @@ subprojects {
 
     cloudstream {
         setRepo(System.getenv("GITHUB_REPOSITORY") ?: "whoissajo/cloudstream")
+        authors = listOf("Umar")
     }
 
     android {
         namespace = "com.umar.r2.${project.name.lowercase()}"
-        compileSdkVersion(35) // Updated to match example
+        compileSdkVersion(35)
 
         defaultConfig {
-            minSdk = 21
+            minSdk = 26 // Updated to match CloudX
             targetSdk = 35
         }
 
@@ -59,8 +59,9 @@ subprojects {
                     "-Xno-call-assertions",
                     "-Xno-param-assertions",
                     "-Xno-receiver-assertions",
-                    "-Xskip-metadata-version-check" // Helps with version mismatches
+                    "-Xskip-metadata-version-check"
                 )
+                allWarningsAsErrors.set(false)
             }
         }
     }
@@ -72,9 +73,13 @@ subprojects {
         cloudstream("com.lagradost:cloudstream3:pre-release")
 
         implementation(kotlin("stdlib"))
-        implementation("com.github.Blatzar:NiceHttp:0.4.11")
-        implementation("org.jsoup:jsoup:1.18.3")
-        implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
+        implementation("com.github.Blatzar:NiceHttp:0.4.13") // Matches CloudX
+        implementation("org.jsoup:jsoup:1.19.1") // Matches CloudX
+        implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.16.0") // Matches CloudX
+        implementation("com.fasterxml.jackson.core:jackson-databind:2.16.0") // Matches CloudX
+        implementation("com.google.code.gson:gson:2.11.0") // Added from CloudX
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1") // Added from CloudX
+        implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
     }
 }
 

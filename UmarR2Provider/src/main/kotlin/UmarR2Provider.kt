@@ -7,6 +7,12 @@ import com.lagradost.cloudstream3.TvType
 import com.lagradost.cloudstream3.SearchResponse
 import com.lagradost.cloudstream3.LoadResponse
 import com.lagradost.cloudstream3.MainPageRequest
+import com.lagradost.cloudstream3.HomePageResponse
+import com.lagradost.cloudstream3.HomePageList
+import com.lagradost.cloudstream3.SubtitleFile
+import com.lagradost.cloudstream3.utils.ExtractorLink
+import com.lagradost.cloudstream3.utils.Qualities
+import com.lagradost.cloudstream3.utils.ExtractorLinkType
 
 /**
  * UmarR2Provider
@@ -70,7 +76,8 @@ class UmarR2Provider : MainAPI() {
             newExtractorLink(
                 source = "UmarR2",
                 name = "R2 Direct",
-                url = data
+                url = data,
+                type = ExtractorLinkType.VIDEO
             ) {
                 this.quality = Qualities.P1080.value
             }
