@@ -6,6 +6,7 @@ import com.lagradost.cloudstream3.MainAPI
 import com.lagradost.cloudstream3.TvType
 import com.lagradost.cloudstream3.SearchResponse
 import com.lagradost.cloudstream3.LoadResponse
+import com.lagradost.cloudstream3.MainPageRequest
 
 /**
  * UmarR2Provider
@@ -34,7 +35,7 @@ class UmarR2Provider : MainAPI() {
         return data.files.filter { it.key.endsWith(".mp4", ignoreCase = true) || it.key.endsWith(".mkv", ignoreCase = true) }
     }
 
-    override suspend fun getMainPage(page: Int, request: HomePageRequest): HomePageResponse? {
+    override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse? {
         val files = getFiles()
         val items = files.map { file ->
             newMovieSearchResponse(file.key, file.streamUrl, TvType.Movie) {
@@ -67,12 +68,12 @@ class UmarR2Provider : MainAPI() {
     ): Boolean {
         callback(
             newExtractorLink(
-                name = "R2 Direct",
-                source = "UmarR2",
-                url = data,
-                referer = "",
-                quality = Qualities.P1080.value,
-                isM3u8 = data.contains(".m3u8")
+                "UmarR2",
+                "R2 Direct",
+                data,
+                "",
+                Qualities.P1080.value,
+                data.contains(".m3u8")
             )
         )
         return true
