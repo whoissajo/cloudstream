@@ -1,2 +1,16 @@
-rootProject.name = "UmarR2Provider"
-include(":app") // Standard Cloudstream structure often uses an 'app' or 'plugin' subproject, but here we setup at root.
+rootProject.name = "UmarR2Repo"
+
+// This file sets what projects are included.
+// All new projects should get automatically included unless specified in the "disabled" variable.
+
+val disabled = listOf<String>()
+
+File(rootDir, ".").eachDir { dir ->
+    if (!disabled.contains(dir.name) && File(dir, "build.gradle.kts").exists() && dir.isDirectory) {
+        include(dir.name)
+    }
+}
+
+fun File.eachDir(block: (File) -> Unit) {
+    listFiles()?.filter { it.isDirectory }?.forEach { block(it) }
+}

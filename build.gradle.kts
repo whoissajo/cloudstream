@@ -1,38 +1,82 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.android.build.gradle.BaseExtension
+import com.lagradost.cloudstream3.gradle.CloudstreamExtension
 
-plugins {
-    kotlin("jvm") version "1.9.20"
-    id("com.lagradost.cloudstream3.gradle") version "0.6.0"
-}
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven("https://jitpack.io")
+    }
 
-group = "com.umar"
-version = "1.0.0"
-
-repositories {
-    mavenCentral()
-    maven("https://jitpack.io")
-}
-
-dependencies {
-    // Cloudstream core dependency for API access
-    compileOnly("com.lagradost:cloudstream3:latest-release")
-    
-    // Kotlin Standard Library
-    implementation(kotlin("stdlib"))
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs = freeCompilerArgs + "-Xjvm-default=all"
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.2.2")
+        classpath("com.github.recloudstream:gradle:-SNAPSHOT")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22")
     }
 }
 
-cloudstream {
-    // Explicitly set the provider class for the plugin
-    // Since there is no package, the class name is used directly
-    providerClass = "UmarR2Provider"
-    
-    // Disable strict checks to ensure a smooth build
-    setCheck(false)
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven("https://jitpack.io")
+    }
+}
+
+fun Project.cloudstream(configuration: CloudstreamExtension.() -> Unit) = extensions.getByName<CloudstreamExtension>("cloudstream").configuration()
+
+fun Project.android(configuration: BaseExtension.() -> Unit) = extensions.getByName<BaseExtension>("android").configuration()
+
+subprojects {
+    apply(plugin = "com.android.library")
+    apply(plugin = "kotlin-android")
+    apply(plugin = "com.lagradost.cloudstream3.gradle")
+
+    cloudstream {
+        // when running through github workflow, GITHUB_REPOSITORY should contain current repository name
+        setRepo(System.getenv("GITHUB_REPOSITORY") ?: "whoissajo/cloudstream")
+    }
+
+    android {
+        namespace = "com.umar.r2"
+
+        defaultConfig {
+            minSdk = 21
+            compileSdk = 34
+            targetSdk = 34
+        }
+
+        compileOptions {
+            sourceCompatibility = JavaVersion.VERSION_1_8
+            targetCompatibility = JavaVersion.VERSION_1_8
+        }
+
+        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile> {
+            compilerOptions {
+                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
+                freeCompilerArgs.addAll(
+                    "-Xno-call-assertions",
+                    "-Xno-param-assertions",
+                    "-Xno-receiver-assertions"
+                )
+            }
+        }
+    }
+
+    dependencies {
+        val cloudstream by configurations
+        val implementation by configurations
+
+        // Stubs for all cloudstream classes
+        cloudstream("com.lagradost:cloudstream3:pre-release")
+
+        implementation(kotlin("stdlib"))
+        implementation("com.github.Blatzar:NiceHttp:0.4.11")
+        implementation("org.jsoup:jsoup:1.18.3")
+        implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
+    }
+}
+
+task<Delete>("clean") {
+    delete(rootProject.layout.buildDirectory)
 }
