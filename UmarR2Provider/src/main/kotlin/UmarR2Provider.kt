@@ -68,13 +68,12 @@ class UmarR2Provider : MainAPI() {
     ): Boolean {
         callback(
             newExtractorLink(
-                "UmarR2",
-                "R2 Direct",
-                data,
-                "",
-                Qualities.P1080.value,
-                data.contains(".m3u8")
-            )
+                source = "UmarR2",
+                name = "R2 Direct",
+                url = data
+            ) {
+                this.quality = Qualities.P1080.value
+            }
         )
         return true
     }
