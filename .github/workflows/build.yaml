@@ -41,9 +41,7 @@ jobs:
 
       - name: Build Plugins
         run: |
-          sed -i 's/\r$//' gradlew
-          chmod +x gradlew
-          ./gradlew make makePluginsJson --stacktrace
+          gradle make makePluginsJson --stacktrace
           
           # Prepare builds directory if it doesn't exist (checkout might fail if branch is new)
           mkdir -p $GITHUB_WORKSPACE/output
