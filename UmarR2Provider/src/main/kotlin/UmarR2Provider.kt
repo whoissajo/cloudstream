@@ -1,14 +1,11 @@
 import com.lagradost.cloudstream3.*
 import com.lagradost.cloudstream3.utils.*
-import com.lagradost.cloudstream3.utils.AppUtils.toJson
+import com.lagradost.cloudstream3.app
 import com.lagradost.cloudstream3.utils.AppUtils.parseJson
 import com.lagradost.cloudstream3.MainAPI
 import com.lagradost.cloudstream3.TvType
 import com.lagradost.cloudstream3.SearchResponse
-import com.lagradost.cloudstream3.MovieSearchResponse
 import com.lagradost.cloudstream3.LoadResponse
-import com.lagradost.cloudstream3.newMovieLoadResponse
-import com.lagradost.cloudstream3.newMovieSearchResponse
 
 /**
  * UmarR2Provider
@@ -21,9 +18,6 @@ class UmarR2Provider : MainAPI() {
 
     private val apiUrl = "https://s3.umarbahi.qzz.io/list"
 
-    /**
-     * Data classes to parse the JSON response from the API
-     */
     data class R2File(
         val key: String,
         val streamUrl: String,
@@ -34,9 +28,6 @@ class UmarR2Provider : MainAPI() {
         val files: List<R2File>
     )
 
-    /**
-     * Fetches and filters the JSON list for video files
-     */
     private suspend fun getFiles(): List<R2File> {
         val response = app.get(apiUrl).text
         val data = parseJson<R2Response>(response)
@@ -47,10 +38,10 @@ class UmarR2Provider : MainAPI() {
         val files = getFiles()
         val items = files.map { file ->
             newMovieSearchResponse(file.key, file.streamUrl, TvType.Movie) {
-                this.posterUrl = null // No posters in the basic JSON API
+                this.posterUrl = null
             }
         }
-        return HomePageResponse(listOf(HomePageList("Latest Files", items)), hasNext = false)
+        return newHomePageResponse(listOf(HomePageList("Latest Files", items)), false)
     }
 
     override suspend fun search(query: String): List<SearchResponse> {
@@ -61,10 +52,7 @@ class UmarR2Provider : MainAPI() {
     }
 
     override suspend fun load(url: String): LoadResponse {
-        // The 'url' here is the streamUrl passed from search/mainPage
-        // We use the filename as the title
         val title = url.substringAfterLast("/")
-        
         return newMovieLoadResponse(title, url, TvType.Movie, url) {
             this.posterUrl = null
             this.plot = "Direct stream from R2: $title"
@@ -77,14 +65,13 @@ class UmarR2Provider : MainAPI() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ): Boolean {
-        // 'data' is the streamUrl we passed in load()
         callback(
-            ExtractorLink(
+            newExtractorLink(
                 name = "R2 Direct",
                 source = "UmarR2",
                 url = data,
                 referer = "",
-                quality = Qualities.P1080.value, // Defaulting to 1080p for direct links
+                quality = Qualities.P1080.value,
                 isM3u8 = data.contains(".m3u8")
             )
         )

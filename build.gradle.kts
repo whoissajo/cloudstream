@@ -11,9 +11,10 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:8.2.2")
+        // Updated to match the working example for Cloudstream
+        classpath("com.android.tools.build:gradle:8.7.3")
         classpath("com.github.recloudstream:gradle:-SNAPSHOT")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0")
     }
 }
 
@@ -34,17 +35,16 @@ subprojects {
     apply(plugin = "com.lagradost.cloudstream3.gradle")
 
     cloudstream {
-        // Automatically set the repo based on GitHub environment
         setRepo(System.getenv("GITHUB_REPOSITORY") ?: "whoissajo/cloudstream")
     }
 
     android {
         namespace = "com.umar.r2.${project.name.lowercase()}"
-        compileSdkVersion(34)
+        compileSdkVersion(35) // Updated to match example
 
         defaultConfig {
             minSdk = 21
-            targetSdk = 34
+            targetSdk = 35
         }
 
         compileOptions {
@@ -58,7 +58,8 @@ subprojects {
                 freeCompilerArgs.addAll(
                     "-Xno-call-assertions",
                     "-Xno-param-assertions",
-                    "-Xno-receiver-assertions"
+                    "-Xno-receiver-assertions",
+                    "-Xskip-metadata-version-check" // Helps with version mismatches
                 )
             }
         }
