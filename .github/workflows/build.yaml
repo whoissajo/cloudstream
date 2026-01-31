@@ -22,7 +22,12 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Build with Gradle
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 8.4
+
+      - name: Build Plugins
         run: |
           gradle make --stacktrace
 
@@ -36,12 +41,13 @@ jobs:
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
+          git fetch origin builds || true
           git checkout -b builds || git checkout builds
           
-          # Move the compiled plugin to the root for easier access
+          # Move compiled plugins to root for easier access
           find . -name "*.cs3" -exec cp {} . \;
           
-          # Update plugins.json/repo.json if they exist at root
+          # Update metadata files if they were generated
           git add *.cs3
           git commit -m "Update build [skip ci]" || echo "No changes to commit"
           git push origin builds --force
