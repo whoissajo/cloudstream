@@ -1,0 +1,22 @@
+{
+    "name": "Umar R2 Repo",
+    "description": "Custom provider repository for Cloudflare R2 streams",
+    "manifestVersion": 1,
+    "pluginListUrl": "https://raw.githubusercontent.com/PLACEHOLDER_USER/PLACEHOLDER_REPO/master/plugins.json",
+    "plugins": [
+        {
+            "name": "UmarR2Provider",
+            "description": "Streams from Cloudflare R2",
+            "version": 1,
+            "url": "https://github.com/PLACEHOLDER_USER/PLACEHOLDER_REPO/raw/master/UmarR2Provider.cs3",
+            "status": 1,
+            "authors": [
+                "Umar"
+            ],
+            "tvTypes": [
+                "Movie"
+            ],
+            "language": "en"
+        }
+    ]
+}
