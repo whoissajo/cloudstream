@@ -29,6 +29,10 @@ tasks.withType<KotlinCompile> {
 }
 
 cloudstream {
-    // This blocks prevents build failures for the plugin 
+    // Explicitly set the provider class for the plugin
+    // Since there is no package, the class name is used directly
+    providerClass = "UmarR2Provider"
+    
+    // Disable strict checks to ensure a smooth build
     setCheck(false)
 }
