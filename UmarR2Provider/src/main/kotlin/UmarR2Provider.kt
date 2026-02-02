@@ -13,6 +13,17 @@ import com.lagradost.cloudstream3.SubtitleFile
 import com.lagradost.cloudstream3.utils.ExtractorLink
 import com.lagradost.cloudstream3.utils.Qualities
 import com.lagradost.cloudstream3.utils.ExtractorLinkType
+import com.lagradost.cloudstream3.plugins.CloudstreamPlugin
+import com.lagradost.cloudstream3.plugins.Plugin
+import android.content.Context
+
+@CloudstreamPlugin
+class UmarR2Plugin: CloudstreamPlugin() {
+    override fun load(context: Context) {
+        // All providers should be added here
+        registerMainAPI(UmarR2Provider())
+    }
+}
 
 /**
  * UmarR2Provider
