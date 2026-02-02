@@ -18,7 +18,7 @@ import com.lagradost.cloudstream3.plugins.Plugin
 import android.content.Context
 
 @CloudstreamPlugin
-class UmarR2Plugin: CloudstreamPlugin() {
+class UmarR2Plugin: Plugin() {
     override fun load(context: Context) {
         // All providers should be added here
         registerMainAPI(UmarR2Provider())
